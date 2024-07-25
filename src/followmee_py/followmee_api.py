@@ -4,8 +4,10 @@ from typing import Dict, List
 from followmee_py.models import DeviceInfo, LocationData
 from followmee_py.rest_adapter import RestAdapter
 
+
 def strip_non_alphabetic(input: str):
     return "".join(c for c in input if c.isalpha())
+
 
 def clean_dict_keys(d: Dict) -> Dict:
     new_d = {}
@@ -16,6 +18,7 @@ def clean_dict_keys(d: Dict) -> Dict:
         else:
             new_d[k] = d[k]
     return new_d
+
 
 class FollowMeeApi:
     def __init__(
@@ -47,13 +50,16 @@ class FollowMeeApi:
             "address": 1 if include_address else 0,
         }
         result = self._rest_adapter.get(endpoint="tracks.aspx", ep_params=ep_params)
-        return [LocationData(**(clean_dict_keys(raw_data))) for raw_data in result.data["Data"]]
-    
+        return [
+            LocationData(**(clean_dict_keys(raw_data)))
+            for raw_data in result.data["Data"]
+        ]
+
     def get_current_location_for_all_devices(
-            self,
-            include_address: bool = False,
-            group_ids: List[str] = [],
-    ):
+        self,
+        include_address: bool = False,
+        group_ids: List[str] = [],
+    ) -> List[LocationData]:
         ep_params = {
             "function": "currentforalldevices",
             "output": "json",
@@ -64,4 +70,49 @@ class FollowMeeApi:
             ep_params["groupid"] = ",".join(group_ids)
 
         result = self._rest_adapter.get(endpoint="tracks.aspx", ep_params=ep_params)
-        return [LocationData(**(clean_dict_keys(raw_data))) for raw_data in result.data["Data"]]
+        return [
+            LocationData(**(clean_dict_keys(raw_data)))
+            for raw_data in result.data["Data"]
+        ]
+
+    def get_recent_history_for_device(
+        self,
+        device_id: str,
+        number_hours: int,
+        include_address: bool = False,
+        include_visit_info: bool = False,
+    ) -> List[LocationData]:
+        ep_params = {
+            "function": "historyfordevice",
+            "output": "json",
+            "history": number_hours,
+            "deviceid": device_id,
+            "address": 1 if include_address else 0,
+            "visit": 1 if include_visit_info else 0,
+        }
+
+        result = self._rest_adapter.get(endpoint="tracks.aspx", ep_params=ep_params)
+        return [
+            LocationData(**clean_dict_keys(raw_data))
+            for raw_data in result.data["Data"]
+        ]
+
+    def get_recent_history_for_all_devices(
+        self,
+        number_hours: int,
+        include_address: bool = False,
+        include_visit_info: bool = False,
+    ):
+        ep_params = {
+            "function": "historyforalldevices",
+            "output": "json",
+            "history": number_hours,
+            "address": 1 if include_address else 0,
+            "visit": 1 if include_visit_info else 0,
+        }
+
+        result = self._rest_adapter.get(endpoint="tracks.aspx", ep_params=ep_params)
+        return [
+            LocationData(**clean_dict_keys(raw_data))
+            for raw_data in result.data["Data"]
+        ]
