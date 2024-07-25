@@ -48,3 +48,20 @@ class FollowMeeApi:
         }
         result = self._rest_adapter.get(endpoint="tracks.aspx", ep_params=ep_params)
         return [LocationData(**(clean_dict_keys(raw_data))) for raw_data in result.data["Data"]]
+    
+    def get_current_location_for_all_devices(
+            self,
+            include_address: bool = False,
+            group_ids: List[str] = [],
+    ):
+        ep_params = {
+            "function": "currentforalldevices",
+            "output": "json",
+            "address": 1 if include_address else 0,
+        }
+
+        if len(group_ids) != 0:
+            ep_params["groupid"] = ",".join(group_ids)
+
+        result = self._rest_adapter.get(endpoint="tracks.aspx", ep_params=ep_params)
+        return [LocationData(**(clean_dict_keys(raw_data))) for raw_data in result.data["Data"]]
