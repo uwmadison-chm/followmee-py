@@ -37,12 +37,10 @@ class RestAdapter:
         self, http_method: str, endpoint: str, ep_params: Dict = None, data: Dict = None
     ) -> Result:
         full_url = self.url + endpoint
-        headers = {"Authorization": f"APIKey {self._api_key}"}
-        log_line_pre = f"method={http_method}, url={full_url}, params={ep_params}"
-        # Log HTTP params and perform an HTTP request, catching and re-raising any exceptions
-
         ep_params["key"] = self._api_key
         ep_params["username"] = self._username
+        log_line_pre = f"method={http_method}, url={full_url}, params={ep_params}"
+        # Log HTTP params and perform an HTTP request, catching and re-raising any exceptions
 
         try:
             self._logger.debug(msg=log_line_pre)
@@ -50,7 +48,6 @@ class RestAdapter:
                 method=http_method,
                 url=full_url,
                 verify=self._ssl_verify,
-                headers=headers,
                 params=ep_params,
                 json=data,
             )

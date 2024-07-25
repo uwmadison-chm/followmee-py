@@ -36,7 +36,37 @@ class DeviceInfo:
         self.active = Active == "1"
         self.tracker_state = int(TrackerState)
         self.tracker_state_time = datetime.strptime(TrackerStateTime, TIME_FMT_STR)
-        print(self.tracker_state_time)
         self.battery = float(Battery.strip("%")) / 100.0
         self.battery_time = datetime.strptime(BatteryTime, TIME_FMT_STR)
-        print(self.battery_time)
+
+class LocationData:
+    def __init__(
+            self,
+            DeviceName: str,
+            DeviceID: str,
+            Date: str,
+            Latitude: float,
+            Longitude: float,
+            Type: str,
+            Speedmph: int,
+            Speedkmh: int,
+            Direction: int,
+            Altitudeft: int,
+            Altitudem: int,
+            Accuracy: int,
+            Battery: str
+    ):
+        self.device_name = DeviceName
+        self.device_id = DeviceID
+        self.date = datetime.strptime(Date, TIME_FMT_STR)
+        self.latitude = Latitude
+        self.longitude = Longitude
+        self.type = Type
+        self.speed_mph = Speedmph
+        self.speed_kmh = Speedkmh
+        self.direction = Direction
+        self.altitude_ft = Altitudeft
+        self.altitude_m = Altitudem
+        self.accuracy = Accuracy
+        self.battery = float(Battery.strip("%")) / 100.0
+        
