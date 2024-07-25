@@ -129,14 +129,14 @@ class FollowMeeApi:
             LocationData(**clean_dict_keys(raw_data))
             for raw_data in result.data["Data"]
         ]
-    
+
     def get_data_in_range_for_device(
-            self,
-            start_date: datetime.datetime,
-            end_date: datetime.datetime,
-            device_id: str,
-            include_address: bool = False,
-            include_visit_info: bool = False,
+        self,
+        start_date: datetime.datetime,
+        end_date: datetime.datetime,
+        device_id: str,
+        include_address: bool = False,
+        include_visit_info: bool = False,
     ):
         ep_params = {
             "function": "daterangefordevice",
@@ -151,15 +151,18 @@ class FollowMeeApi:
         result = self._rest_adapter.get(endpoint="tracks.aspx", ep_params=ep_params)
         if "Error" in result.data:
             raise FollowMeeApiException(result.data["Error"])
-        return [LocationData(**clean_dict_keys(raw_data)) for raw_data in result.data["Data"]]
-    
+        return [
+            LocationData(**clean_dict_keys(raw_data))
+            for raw_data in result.data["Data"]
+        ]
+
     def get_data_in_range_for_all_devices(
-            self,
-            start_date: datetime.datetime,
-            end_date: datetime.datetime,
-            include_address: bool = False,
-            include_visit_info: bool = False,
-            group_ids: List[str] = [],
+        self,
+        start_date: datetime.datetime,
+        end_date: datetime.datetime,
+        include_address: bool = False,
+        include_visit_info: bool = False,
+        group_ids: List[str] = [],
     ):
         ep_params = {
             "function": "daterangeforalldevices",
@@ -176,4 +179,7 @@ class FollowMeeApi:
         result = self._rest_adapter.get(endpoint="tracks.aspx", ep_params=ep_params)
         if "Error" in result.data:
             raise FollowMeeApiException(result.data["Error"])
-        return [LocationData(**clean_dict_keys(raw_data)) for raw_data in result.data["Data"]]
+        return [
+            LocationData(**clean_dict_keys(raw_data))
+            for raw_data in result.data["Data"]
+        ]
