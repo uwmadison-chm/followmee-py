@@ -1,6 +1,8 @@
+import datetime
 import logging
 from typing import Dict, List
 
+from followmee_py.exceptions import FollowMeeApiException
 from followmee_py.models import DeviceInfo, LocationData
 from followmee_py.rest_adapter import RestAdapter
 
@@ -36,6 +38,9 @@ class FollowMeeApi:
     def get_all_devices(self) -> List[DeviceInfo]:
         ep_params = {"function": "devicelist"}
         result = self._rest_adapter.get(endpoint="info.aspx", ep_params=ep_params)
+
+        if "Error" in result.data:
+            raise FollowMeeApiException(result.data["Error"])
         return [DeviceInfo(**raw_data) for raw_data in result.data["Data"]]
 
     def get_current_location_for_devices(
@@ -50,6 +55,8 @@ class FollowMeeApi:
             "address": 1 if include_address else 0,
         }
         result = self._rest_adapter.get(endpoint="tracks.aspx", ep_params=ep_params)
+        if "Error" in result.data:
+            raise FollowMeeApiException(result.data["Error"])
         return [
             LocationData(**(clean_dict_keys(raw_data)))
             for raw_data in result.data["Data"]
@@ -70,6 +77,8 @@ class FollowMeeApi:
             ep_params["groupid"] = ",".join(group_ids)
 
         result = self._rest_adapter.get(endpoint="tracks.aspx", ep_params=ep_params)
+        if "Error" in result.data:
+            raise FollowMeeApiException(result.data["Error"])
         return [
             LocationData(**(clean_dict_keys(raw_data)))
             for raw_data in result.data["Data"]
@@ -92,6 +101,8 @@ class FollowMeeApi:
         }
 
         result = self._rest_adapter.get(endpoint="tracks.aspx", ep_params=ep_params)
+        if "Error" in result.data:
+            raise FollowMeeApiException(result.data["Error"])
         return [
             LocationData(**clean_dict_keys(raw_data))
             for raw_data in result.data["Data"]
@@ -112,7 +123,57 @@ class FollowMeeApi:
         }
 
         result = self._rest_adapter.get(endpoint="tracks.aspx", ep_params=ep_params)
+        if "Error" in result.data:
+            raise FollowMeeApiException(result.data["Error"])
         return [
             LocationData(**clean_dict_keys(raw_data))
             for raw_data in result.data["Data"]
         ]
+    
+    def get_data_in_range_for_device(
+            self,
+            start_date: datetime.datetime,
+            end_date: datetime.datetime,
+            device_id: str,
+            include_address: bool = False,
+            include_visit_info: bool = False,
+    ):
+        ep_params = {
+            "function": "daterangefordevice",
+            "output": "json",
+            "from": start_date.strftime("%Y-%m-%d"),
+            "to": end_date.strftime("%Y-%m-%d"),
+            "deviceid": device_id,
+            "address": 1 if include_address else 0,
+            "visit": 1 if include_visit_info else 0,
+        }
+
+        result = self._rest_adapter.get(endpoint="tracks.aspx", ep_params=ep_params)
+        if "Error" in result.data:
+            raise FollowMeeApiException(result.data["Error"])
+        return [LocationData(**clean_dict_keys(raw_data)) for raw_data in result.data["Data"]]
+    
+    def get_data_in_range_for_all_devices(
+            self,
+            start_date: datetime.datetime,
+            end_date: datetime.datetime,
+            include_address: bool = False,
+            include_visit_info: bool = False,
+            group_ids: List[str] = [],
+    ):
+        ep_params = {
+            "function": "daterangeforalldevices",
+            "output": "json",
+            "from": start_date.strftime("%Y-%m-%d"),
+            "to": end_date.strftime("%Y-%m-%d"),
+            "address": 1 if include_address else 0,
+            "visit": 1 if include_visit_info else 0,
+        }
+
+        if len(group_ids) != 0:
+            ep_params["groupid"] = ",".join(group_ids)
+
+        result = self._rest_adapter.get(endpoint="tracks.aspx", ep_params=ep_params)
+        if "Error" in result.data:
+            raise FollowMeeApiException(result.data["Error"])
+        return [LocationData(**clean_dict_keys(raw_data)) for raw_data in result.data["Data"]]
