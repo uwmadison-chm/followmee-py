@@ -20,8 +20,8 @@ class RestAdapter:
     ):
         """
         :param api_key: string used for authentication
+        :param username: FollowMee username
         :param hostname: Normally, www.followmee.com
-        :param ver: always v1
         :param ssl_verify: Normally set to True, but if having SSL/TLS cert validation issues, can turn off with False
         :param logger: (optional) If your app has a logger, pass it in here
         """
