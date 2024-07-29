@@ -131,7 +131,7 @@ class FollowMeeApi:
         number_hours: int,
         include_address: bool = False,
         include_visit_info: bool = False,
-    ):
+    ) -> List[LocationData]:
         ep_params = {
             "function": "historyforalldevices",
             "output": "json",
@@ -158,7 +158,7 @@ class FollowMeeApi:
         device_id: str,
         include_address: bool = False,
         include_visit_info: bool = False,
-    ):
+    ) -> List[LocationData]:
         ep_params = {
             "function": "daterangefordevice",
             "output": "json",
@@ -188,7 +188,7 @@ class FollowMeeApi:
         include_address: bool = False,
         include_visit_info: bool = False,
         group_ids: List[str] = [],
-    ):
+    ) -> List[LocationData]:
         ep_params = {
             "function": "daterangeforalldevices",
             "output": "json",
