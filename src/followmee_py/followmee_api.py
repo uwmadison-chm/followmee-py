@@ -21,6 +21,12 @@ def clean_dict_keys(d: Dict) -> Dict:
             new_d[k] = d[k]
     return new_d
 
+def data_has_error(d):
+    return "Error" in d
+
+def error_is_no_data(e):
+    return "No data returned for your query" in e
+
 
 class FollowMeeApi:
     def __init__(
@@ -39,8 +45,11 @@ class FollowMeeApi:
         ep_params = {"function": "devicelist"}
         result = self._rest_adapter.get(endpoint="info.aspx", ep_params=ep_params)
 
-        if "Error" in result.data:
-            raise FollowMeeApiException(result.data["Error"])
+        if data_has_error(result.data):
+            error_msg = result.data["Error"]
+            if error_is_no_data(error_msg):
+                return []
+            raise FollowMeeApiException(error_msg)
         return [DeviceInfo(**raw_data) for raw_data in result.data["Data"]]
 
     def get_current_location_for_devices(
@@ -55,8 +64,11 @@ class FollowMeeApi:
             "address": 1 if include_address else 0,
         }
         result = self._rest_adapter.get(endpoint="tracks.aspx", ep_params=ep_params)
-        if "Error" in result.data:
-            raise FollowMeeApiException(result.data["Error"])
+        if data_has_error(result.data):
+            error_msg = result.data["Error"]
+            if error_is_no_data(error_msg):
+                return []
+            raise FollowMeeApiException(error_msg)
         return [
             LocationData(**(clean_dict_keys(raw_data)))
             for raw_data in result.data["Data"]
@@ -77,8 +89,11 @@ class FollowMeeApi:
             ep_params["groupid"] = ",".join(group_ids)
 
         result = self._rest_adapter.get(endpoint="tracks.aspx", ep_params=ep_params)
-        if "Error" in result.data:
-            raise FollowMeeApiException(result.data["Error"])
+        if data_has_error(result.data):
+            error_msg = result.data["Error"]
+            if error_is_no_data(error_msg):
+                return []
+            raise FollowMeeApiException(error_msg)
         return [
             LocationData(**(clean_dict_keys(raw_data)))
             for raw_data in result.data["Data"]
@@ -101,8 +116,11 @@ class FollowMeeApi:
         }
 
         result = self._rest_adapter.get(endpoint="tracks.aspx", ep_params=ep_params)
-        if "Error" in result.data:
-            raise FollowMeeApiException(result.data["Error"])
+        if data_has_error(result.data):
+            error_msg = result.data["Error"]
+            if error_is_no_data(error_msg):
+                return []
+            raise FollowMeeApiException(error_msg)
         return [
             LocationData(**clean_dict_keys(raw_data))
             for raw_data in result.data["Data"]
@@ -123,8 +141,11 @@ class FollowMeeApi:
         }
 
         result = self._rest_adapter.get(endpoint="tracks.aspx", ep_params=ep_params)
-        if "Error" in result.data:
-            raise FollowMeeApiException(result.data["Error"])
+        if data_has_error(result.data):
+            error_msg = result.data["Error"]
+            if error_is_no_data(error_msg):
+                return []
+            raise FollowMeeApiException(error_msg)
         return [
             LocationData(**clean_dict_keys(raw_data))
             for raw_data in result.data["Data"]
@@ -149,8 +170,12 @@ class FollowMeeApi:
         }
 
         result = self._rest_adapter.get(endpoint="tracks.aspx", ep_params=ep_params)
-        if "Error" in result.data:
-            raise FollowMeeApiException(result.data["Error"])
+        if data_has_error(result.data):
+            error_msg = result.data["Error"]
+            if error_is_no_data(error_msg):
+                return []
+            raise FollowMeeApiException(error_msg)
+        
         return [
             LocationData(**clean_dict_keys(raw_data))
             for raw_data in result.data["Data"]
@@ -177,8 +202,13 @@ class FollowMeeApi:
             ep_params["groupid"] = ",".join(group_ids)
 
         result = self._rest_adapter.get(endpoint="tracks.aspx", ep_params=ep_params)
-        if "Error" in result.data:
-            raise FollowMeeApiException(result.data["Error"])
+        
+        if data_has_error(result.data):
+            error_msg = result.data["Error"]
+            if error_is_no_data(error_msg):
+                return []
+            raise FollowMeeApiException(error_msg)
+        
         return [
             LocationData(**clean_dict_keys(raw_data))
             for raw_data in result.data["Data"]
