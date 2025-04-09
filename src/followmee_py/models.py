@@ -74,3 +74,5 @@ class LocationData:
         self.accuracy = Accuracy
         if Battery:
             self.battery = float(Battery.strip("%")) / 100.0
+        else:
+            self.battery = ""
