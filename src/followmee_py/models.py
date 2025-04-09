@@ -58,7 +58,7 @@ class LocationData:
         Altitudeft: int,
         Altitudem: int,
         Accuracy: int,
-        Battery: str,
+        Battery: str = "",
     ):
         self.device_name = DeviceName
         self.device_id = DeviceID
@@ -72,4 +72,5 @@ class LocationData:
         self.altitude_ft = Altitudeft
         self.altitude_m = Altitudem
         self.accuracy = Accuracy
-        self.battery = float(Battery.strip("%")) / 100.0
+        if Battery:
+            self.battery = float(Battery.strip("%")) / 100.0
