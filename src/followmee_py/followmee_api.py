@@ -21,8 +21,10 @@ def clean_dict_keys(d: Dict) -> Dict:
             new_d[k] = d[k]
     return new_d
 
+
 def data_has_error(d):
     return "Error" in d
+
 
 def error_is_no_data(e):
     return "No data returned for your query" in e
@@ -175,7 +177,7 @@ class FollowMeeApi:
             if error_is_no_data(error_msg):
                 return []
             raise FollowMeeApiException(error_msg)
-        
+
         return [
             LocationData(**clean_dict_keys(raw_data))
             for raw_data in result.data["Data"]
@@ -202,13 +204,13 @@ class FollowMeeApi:
             ep_params["groupid"] = ",".join(group_ids)
 
         result = self._rest_adapter.get(endpoint="tracks.aspx", ep_params=ep_params)
-        
+
         if data_has_error(result.data):
             error_msg = result.data["Error"]
             if error_is_no_data(error_msg):
                 return []
             raise FollowMeeApiException(error_msg)
-        
+
         return [
             LocationData(**clean_dict_keys(raw_data))
             for raw_data in result.data["Data"]

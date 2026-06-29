@@ -4,24 +4,35 @@ build-backend = "hatchling.build"
 
 [project]
 name = "followmee_py"
-version = "2025.04.09.0"
+version = "2026.06.29.0"
 authors = [
     { name="Nicholas Vanhaute", email="nvanhaute@wisc.edu" },
+    { name="Stuti Shrivastava", email="sshrivastav6@wisc.edu" },
+]
+maintainers = [
+    { name="Stuti Shrivastava", email="sshrivastav6@wisc.edu" },
+    { name="Nate Vack", email="njvack@wisc.edu" },
 ]
 description = "A Python wrapper for the FollowMee REST API"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.12"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    "certifi==2024.7.4",
-    "charset-normalizer==3.3.2",
-    "idna==3.7",
-    "requests==2.32.3",
-    "urllib3==2.2.2",
+    "certifi>=2026.6.17",
+    "charset-normalizer>=3.4.7",
+    "idna>=3.18",
+    "requests>=2.34.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.15.20",
+    "build>=1.5.0",
+    "twine>=6.2.0",
 ]
 
 [project.urls]
